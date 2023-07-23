@@ -27,7 +27,7 @@ class UserController {
             // httpOnly switch is required for prevent getting cookie with token through javascript
             return res.json(userData); // Returning user data in json 
         } catch (e) {
-            next(e);
+            next(e); // Error "transfer" to the next middleware function to end with "ErrorHandler"
         }
     }
 
@@ -38,7 +38,7 @@ class UserController {
             res.clearCookie('refreshToken'); // Delete cookie with refresh token
             return res.json(token); // Returning response with token to CLIENT  
         } catch (e) {
-            next(e);
+            next(e); // Error "transfer" to the next middleware function to end with "ErrorHandler"
         }
     }
 
@@ -48,7 +48,7 @@ class UserController {
             await userService.activate(activationLink);
             return res.redirect(process.env.CLIENT_URL);
         } catch (e) {
-            next(e);
+            next(e); // Error "transfer" to the next middleware function to end with "ErrorHandler"
         }
     }
 
@@ -60,16 +60,16 @@ class UserController {
             // httpOnly switch is required for prevent getting cookie with token through javascript
             return res.json(userData); // Returning user data in json 
         } catch (e) {
-            next(e);
+            next(e); // Error "transfer" to the next middleware function to end with "ErrorHandler"
         }
     }
 
-    async getUsers(req, res, next) {
+    async getUsers(req, res, next) { // Getting user list from DB
         try {
             const users = await userService.getAllUsers(); // Defining users for getting from DB
             return res.json(users); // Return response in json
         } catch (e) {
-            next(e);
+            next(e); // Error "transfer" to the next middleware function to end with "ErrorHandler"
         }
     }
 }
