@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
-const tokenModel = require('../models/token-model.js')
+const tokenModel = require('../models/token-model.js');
+const userModel = require('../models/user-model.js');
 
 class TokenService { // Creating token-gen service
     genTokens(payload) {
@@ -46,6 +47,25 @@ class TokenService { // Creating token-gen service
         const tokenData = tokenModel.findOne({refreshToken}); // Searching for refresh token in token model
         return tokenData;  // Returning updated model to DB
     }
-}
+
+    async deleteToken(userId) { // Def for finding token function
+        const tokenData = tokenModel.findOne({user: userId}); // Searching for id in token model
+        if (tokenData) {
+            await tokenModel.deleteOne()
+        }
+    }
+
+    // genResetToken(id, Hash) {
+    //     const resetToken = jwt.sign(id, Hash, {expiresIn: '30m'}) // Creating resetToken
+    //     return {resetToken};
+    // }
+
+    // async deleteResToken(email) { // Def for finding token function
+    //     const tokenData = userModel.findOne({email}); // Searching for id in token model
+    //     if (tokenData) {
+    //         await tokenData.deleteOne({resetToken})
+    //     }
+    // }
+};
 
 module.exports = new TokenService(); // Export module to an obj

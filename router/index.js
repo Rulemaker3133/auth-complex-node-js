@@ -13,5 +13,8 @@ router.post('/logout', userController.logout); // For login out of the session
 router.get('/activate/:link', userController.activate); // For activation through mail
 router.get('/refresh', userController.refresh); // For refreshToken updating in the DB
 router.get('/users', authMiddleware, userController.getUsers); // For getting list of the users
+router.post('/forget-password', userController.forgetPass);
+router.get('/reset/:link', userController.reset);
+router.post('/reset-password', userController.resPass);
 
 module.exports = router;

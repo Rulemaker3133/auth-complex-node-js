@@ -16,7 +16,7 @@ class MailService {
         await this.transporter.sendMail({
             from: process.env.SMTP_USER, // Sending letter from testing email
             to,
-            subject: `Activate yout account on ${process.env.API_URL}`, // Webpage URL
+            subject: `Activate your account on ${process.env.API_URL}`, // Webpage URL
             text: '',
             html: 
                 `
@@ -27,6 +27,38 @@ class MailService {
                 `
         })
         
+    }
+
+    async sendResetPWLetter(to, link) {
+        await this.transporter.sendMail({
+            from: process.env.SMTP_USER, // Sending letter from testing email
+            to,
+            subject: `Reset your password on ${process.env.API_URL}`, // Webpage URL
+            text: '',
+            html: 
+                `
+                    <div>
+                        <h1>For reseting please go through hyperlink</h1>
+                        <a href="${link}">${link}</a>
+                    </div>
+                `
+        })
+        
+    }
+
+    async sendResetSuccesPW(to) {
+        await this.transporter.sendMail({
+            from: process.env.SMTP_USER, // Sending letter from testing email
+            to,
+            subject: `Password reset on ${process.env.API_URL}`, // Webpage URL
+            text: '',
+            html: 
+                `
+                    <div>
+                        <h1>Your password was succesfully reset.</h1>
+                    </div>
+                `
+        })
     }
 }
 

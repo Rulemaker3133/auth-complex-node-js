@@ -72,6 +72,40 @@ class UserController {
             next(e); // Error "transfer" to the next middleware function to end with "ErrorHandler"
         }
     }
+
+    async forgetPass(req, res, next) {
+        try {
+            const {email} = req.body // Getting user input from request body
+            const userData = await userService.forgetPassword(email);
+            return res.json(userData);
+        } catch (e) {
+            next(e); // Error "transfer" to the next middleware function to end with "ErrorHandler"
+        }
+    }
+
+    async reset(req, res, next) {
+        try {
+            const resetLink = req.params.link // Get the user's link fron request (previosly defined in router as "/activate/:link")
+            await userService.reset(resetLink);
+            return res.redirect(process.env.CLIENT_URL);
+        } catch (e) {
+            next(e); // Error "transfer" to the next middleware function to end with "ErrorHandler"
+        }
+    }
+
+    async resPass(req, res, next) {
+        try {
+            const userData = await userService.resetPassword(
+                req.body.email,
+                req.body.resetToken,
+                req.body.password       
+            );
+            res.cookie('refreshToken', userData.refreshToken, {maxAge: 60 * 24 * 60 * 60 * 1000, httpOnly: true})
+            return res.json(userData);
+        } catch (e) {
+            next(e); // Error "transfer" to the next middleware function to end with "ErrorHandler"
+        }
+    }
 }
 
 
