@@ -102,13 +102,13 @@ class UserService { // User register service
         return hash;
     }
 
-    async reset(resetLink) {
-        const user = await UserModel.findOne({resetLink}) // Try to find user by current activationLink 
-        // P.S.: 'user' is already created model by UserModel (even if I do not specified anything, except the activation link), with current data
+    async reset(resetLink) { // Confirming password reset
+        const user = await UserModel.findOne({resetLink}) // Try to find user by current resetLink 
+        // P.S.: 'user' is already created model by UserModel (even if I do not specified anything, except the reset link), with current data
         if (!user) { // If not found user - throw error
             throw ApiError.BadRequest('Uncorrect reset link');
         }
-        user.isReset = true; // Mark user as activated
+        user.isReset = true; // Mark user as reset
         await user.save(); // Save the updated current user structure in DB
     }
 
@@ -116,32 +116,33 @@ class UserService { // User register service
         const email = userEmail;
         const user = await UserModel.findOne({email})
         if (!user) {
-            throw new Error('User is not found');
+            throw new Error('User is not found'); // If not found user - throw error
         }
 
-        const isValid = bcrypt.compare(resToken, user.resetToken);
+        const isValid = bcrypt.compare(resToken, user.resetToken); // Checking for both tokens same, to make sure it correct
         if (!isValid) {
-            throw new Error("Invalid or expired password reset token");
+            throw new Error("Invalid or expired password reset token"); // If not - throw error
         }
 
-        const isTrue = user.isReset;
+        const isTrue = user.isReset; // Checking, has user confirmed reset by mail
 
         if (!isTrue) {
-            throw new Error("Password is not reset token");
+            throw new Error("Password is not reset token"); // If not - throw error
         }
 
-        const hashPassword = await bcrypt.hash(password, salt);
+        const hashPassword = await bcrypt.hash(password, salt); // Creating new password for user
         
-        await UserModel.updateOne(
+        await UserModel.updateOne( // Updating it in DB
             {email: userEmail}, 
             {$set: {password: hashPassword}}, 
             {new: true}
         );
-        const userDto = new UserDto(user);
-        const tokenPair = tokenService.genTokens({...userDto})
+
+        const userDto = new UserDto(user); // Creating new token pair for user
+        const tokenPair = tokenService.genTokens({...userDto}) 
         await tokenService.saveToken(userDto.id, tokenPair.refreshToken); // Saving refreshToken into DB
-        await mailService.sendResetSuccesPW(userEmail)
-        return {...tokenPair, user: userDto};
+        await mailService.sendResetSuccesPW(userEmail) // Send letter about succesfully updated password
+        return {...tokenPair, user: userDto}; // Returning data into controller
     }
 }
 

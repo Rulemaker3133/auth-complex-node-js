@@ -46,7 +46,7 @@ class MailService {
         
     }
 
-    async sendResetSuccesPW(to) {
+    async sendResetSuccesPW(to) { 
         await this.transporter.sendMail({
             from: process.env.SMTP_USER, // Sending letter from testing email
             to,
@@ -55,7 +55,7 @@ class MailService {
             html: 
                 `
                     <div>
-                        <h1>Your password was succesfully reset.</h1>
+                        <h1>Your password was succesfully updated.</h1>
                     </div>
                 `
         })

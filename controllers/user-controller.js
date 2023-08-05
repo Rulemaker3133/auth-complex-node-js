@@ -73,7 +73,7 @@ class UserController {
         }
     }
 
-    async forgetPass(req, res, next) {
+    async forgetPass(req, res, next) { // Sending reset password email
         try {
             const {email} = req.body // Getting user input from request body
             const userData = await userService.forgetPassword(email);
@@ -83,9 +83,9 @@ class UserController {
         }
     }
 
-    async reset(req, res, next) {
+    async reset(req, res, next) { // User reset pasword confirm
         try {
-            const resetLink = req.params.link // Get the user's link fron request (previosly defined in router as "/activate/:link")
+            const resetLink = req.params.link // Get the user's link fron request (previosly defined in router as "/reset/:link")
             await userService.reset(resetLink);
             return res.redirect(process.env.CLIENT_URL);
         } catch (e) {
@@ -93,7 +93,7 @@ class UserController {
         }
     }
 
-    async resPass(req, res, next) {
+    async resPass(req, res, next) { // Changing password to new
         try {
             const userData = await userService.resetPassword(
                 req.body.email,
